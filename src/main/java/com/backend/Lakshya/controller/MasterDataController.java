@@ -23,6 +23,7 @@ public class MasterDataController {
     @PostMapping
     public Master addData(@RequestBody Master master)
     {
-        masterRepository.save(master);
+        return masterRepository.save(master);
     }
+
 }
