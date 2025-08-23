@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class SignUp {
+public class SignUpController {
 
     @Autowired
     private UsersRepository usersRepository;
