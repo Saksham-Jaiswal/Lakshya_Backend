@@ -13,7 +13,7 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String inventoryName;
+    private String shopName;
     private String productName;
     private long quantity;
     @UpdateTimestamp
@@ -29,12 +29,12 @@ public class Child {
         this.id = id;
     }
 
-    public String getInventoryName() {
-        return inventoryName;
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setInventoryName(String inventoryName) {
-        this.inventoryName = inventoryName;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public String getProductName() {

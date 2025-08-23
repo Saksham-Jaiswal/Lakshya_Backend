@@ -13,7 +13,6 @@ public class Master {
     private String owner;
     private String shopName;
     private String salesPersonName;
-    private String inventory;
 
     public Long getId() {
         return id;
@@ -45,13 +44,5 @@ public class Master {
 
     public void setSalesPersonName(String salesPersonName) {
         this.salesPersonName = salesPersonName;
-    }
-
-    public String getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(String inventory) {
-        this.inventory = inventory;
     }
 }
