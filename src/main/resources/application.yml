@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require
+    username: postgres.pmgajzriuguoeswidyrm
+    password: Saksham@333
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      maximum-pool-size: 10
+      data-source-properties:
+        cachePrepStmts: false
+        useServerPrepStmts: false
+        prepStmtCacheSize: 0
+        prepStmtCacheSqlLimit: 0
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8080
