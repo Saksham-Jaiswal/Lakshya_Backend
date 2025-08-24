@@ -5,25 +5,34 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.Date;
 
 @Entity
-@Table(name="inventory")
-public class Inventory {
+@Table(name="transactions")
+public class Transactions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // One shop has many inventory items
+    // Many transactions belong to one shop
     @ManyToOne
     @JoinColumn(name = "shop_id", referencedColumnName = "shop_id", nullable = false)
     private Shop shop;
 
     private String productName;
     private long quantity;
-    private double price;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdatedDate;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionAction action;
+
+    /*
+      action can have three values:
+      1. SALES
+      2. STOCK_IN
+      3. TRANSFER
+     */
 
     // Getters and setters
     public Long getId() { return id; }
@@ -38,9 +47,9 @@ public class Inventory {
     public long getQuantity() { return quantity; }
     public void setQuantity(long quantity) { this.quantity = quantity; }
 
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-
     public Date getLastUpdatedDate() { return lastUpdatedDate; }
     public void setLastUpdatedDate(Date lastUpdatedDate) { this.lastUpdatedDate = lastUpdatedDate; }
+
+    public TransactionAction getAction() { return action; }
+    public void setAction(TransactionAction action) { this.action = action; }
 }

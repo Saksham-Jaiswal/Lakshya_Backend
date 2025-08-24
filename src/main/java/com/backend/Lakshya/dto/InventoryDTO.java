@@ -1,36 +1,25 @@
-package com.backend.Lakshya.model;
+package com.backend.Lakshya.dto;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.UpdateTimestamp;
 import java.util.Date;
 
-@Entity
-@Table(name="inventory")
-public class Inventory {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class InventoryDTO {
     private Long id;
-
-    // One shop has many inventory items
-    @ManyToOne
-    @JoinColumn(name = "shop_id", referencedColumnName = "shop_id", nullable = false)
-    private Shop shop;
-
+    private Long shopId;
+    private String shopName;
     private String productName;
     private long quantity;
     private double price;
-
-    @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdatedDate;
 
-    // Getters and setters
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Shop getShop() { return shop; }
-    public void setShop(Shop shop) { this.shop = shop; }
+    public Long getShopId() { return shopId; }
+    public void setShopId(Long shopId) { this.shopId = shopId; }
+
+    public String getShopName() { return shopName; }
+    public void setShopName(String shopName) { this.shopName = shopName; }
 
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
