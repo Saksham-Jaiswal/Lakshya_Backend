@@ -6,21 +6,13 @@ import jakarta.persistence.*;
 @Table(name = "master")
 public class Master {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 
     private String owner;
+    @Id
+    @Column(name = "shop_name",nullable=false,unique=true)
     private String shopName;
     private String salesPersonName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getOwner() {
         return owner;
