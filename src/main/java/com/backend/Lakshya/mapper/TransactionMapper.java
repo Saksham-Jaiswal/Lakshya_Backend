@@ -1,10 +1,10 @@
 package com.backend.Lakshya.mapper;
 
 import com.backend.Lakshya.dto.TransactionDTO;
-import com.backend.Lakshya.model.Transactions;
+import com.backend.Lakshya.model.Transaction;
 
 public class TransactionMapper {
-    public static TransactionDTO toDTO(Transactions txn) {
+    public static TransactionDTO toDTO(Transaction txn) {
         TransactionDTO dto = new TransactionDTO();
         dto.setId(txn.getId());
         dto.setShopId(txn.getShop().getShopId());

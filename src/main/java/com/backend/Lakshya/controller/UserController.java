@@ -1,7 +1,7 @@
 package com.backend.Lakshya.controller;
 
-import com.backend.Lakshya.model.Users;
-import com.backend.Lakshya.repository.UsersRepository;
+import com.backend.Lakshya.model.User;
+import com.backend.Lakshya.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,24 +10,24 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UsersRepository usersRepo;
+    private final UserRepository usersRepo;
 
-    public UserController(UsersRepository usersRepo) {
+    public UserController(UserRepository usersRepo) {
         this.usersRepo = usersRepo;
     }
 
     @GetMapping
-    public List<Users> getAllUsers() {
+    public List<User> getAllUsers() {
         return usersRepo.findAll();
     }
 
     @PostMapping
-    public Users createUser(@RequestBody Users user) {
+    public User createUser(@RequestBody User user) {
         return usersRepo.save(user);
     }
 
     @GetMapping("/{id}")
-    public Users getUser(@PathVariable Long id) {
+    public User getUser(@PathVariable Long id) {
         return usersRepo.findById(id).orElseThrow();
     }
 }
