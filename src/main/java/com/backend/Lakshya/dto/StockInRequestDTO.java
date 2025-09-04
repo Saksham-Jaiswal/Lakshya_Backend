@@ -12,7 +12,7 @@ public class StockInRequestDTO {
     private String productName;
     @Positive(message = "Quantity must be positive")
     private long quantity;
-    @PositiveOrZero(message = "Price cannot be negative")
+    @Positive(message = "Price must be positive")
     private double price;
 
     // Getters & Setters
