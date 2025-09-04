@@ -2,6 +2,7 @@ package com.backend.Lakshya.controller;
 
 import com.backend.Lakshya.dto.*;
 import com.backend.Lakshya.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class TransactionController {
 
     // ---------- STOCK IN ----------
     @PostMapping("/stock-in")
-    public ResponseEntity<TransactionResponseDTO> stockIn(@RequestBody StockInRequestDTO request) {
+    public ResponseEntity<TransactionResponseDTO> stockIn(@Valid @RequestBody StockInRequestDTO request) {
         TransactionResponseDTO response = transactionService.stockIn(
                 request.getShopId(),
                 request.getProductName(),
@@ -29,7 +30,7 @@ public class TransactionController {
 
     // ---------- SALE ----------
     @PostMapping("/sale")
-    public ResponseEntity<TransactionResponseDTO> sale(@RequestBody SaleRequestDTO request) {
+    public ResponseEntity<TransactionResponseDTO> sale(@Valid @RequestBody SaleRequestDTO request) {
         TransactionResponseDTO response = transactionService.sale(
                 request.getShopId(),
                 request.getProductName(),
@@ -40,7 +41,7 @@ public class TransactionController {
 
     // ---------- TRANSFER ----------
     @PostMapping("/transfer")
-    public ResponseEntity<TransferResponseDTO> transfer(@RequestBody TransferRequestDTO request) {
+    public ResponseEntity<TransferResponseDTO> transfer(@Valid @RequestBody TransferRequestDTO request) {
         TransferResponseDTO response = transactionService.transfer(
                 request.getSourceShopId(),
                 request.getDestShopId(),

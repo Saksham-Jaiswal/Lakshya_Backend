@@ -25,7 +25,7 @@ public class Transaction {
     private Date lastUpdatedDate;
 
     @Enumerated(EnumType.STRING)
-    private TransactionAction action; // SALES / STOCK_IN
+    private TransactionAction action; // SALES / STOCK_IN ETC..
 
     // For transfers, we need to know where the stock went
     @ManyToOne

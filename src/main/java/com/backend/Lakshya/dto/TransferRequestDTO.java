@@ -1,9 +1,17 @@
 package com.backend.Lakshya.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class TransferRequestDTO {
+    @NotNull(message = "Shop ID is required")
     private Long sourceShopId;
+    @NotNull(message = "Shop ID is required")
     private Long destShopId;
+    @NotEmpty(message = "Product name cannot be empty")
     private String productName;
+    @Positive(message = "Quantity must be positive")
     private long quantity;
 
     // Getters & Setters

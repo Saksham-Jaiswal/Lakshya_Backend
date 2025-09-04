@@ -1,5 +1,6 @@
 package com.backend.Lakshya.service;
 
+import com.backend.Lakshya.customException.ShopNotFoundException;
 import com.backend.Lakshya.model.Inventory;
 import com.backend.Lakshya.model.Shop;
 import com.backend.Lakshya.repository.InventoryRepository;
@@ -56,7 +57,7 @@ public class InventoryService {
 
         if (inventory == null) {
             Shop shop = shopRepo.findById(shopId)
-                    .orElseThrow(() -> new RuntimeException("Shop not found with id: " + shopId));
+                    .orElseThrow(() -> new ShopNotFoundException("Shop not found with ID: " + shopId));
 
             inventory = new Inventory();
             inventory.setShop(shop);
@@ -68,3 +69,11 @@ public class InventoryService {
         return inventory;
     }
 }
+/*
+JPA/Hibernate Behavior:
+
+If the Inventory object has an ID (i.e., it was loaded from the database), save updates the existing record.
+If the Inventory object has no ID (i.e., it’s newly created), save creates a new record.
+
+
+ */

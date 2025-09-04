@@ -1,5 +1,7 @@
 package com.backend.Lakshya.service;
 
+import com.backend.Lakshya.customException.InventoryUpdateException;
+import com.backend.Lakshya.customException.ShopNotFoundException;
 import com.backend.Lakshya.dto.TransactionResponseDTO;
 import com.backend.Lakshya.dto.TransferResponseDTO;
 import com.backend.Lakshya.model.*;
@@ -27,27 +29,37 @@ public class TransactionService {
     // ---------- STOCK IN ----------
     @Transactional
     public TransactionResponseDTO stockIn(Long shopId, String productName, long quantity, double price) {
+        // Validate shop existence
         Shop shop = shopRepo.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+                .orElseThrow(() -> new ShopNotFoundException("Shop not found with ID: " + shopId));
 
+        // Create and save transaction
         Transaction txn = new Transaction();
         txn.setShop(shop);
         txn.setProductName(productName);
         txn.setQuantity(quantity);
         txn.setAction(TransactionAction.STOCK_IN);
 
-        transactionRepo.save(txn);
+        transactionRepo.save(txn);// because we are doing a database txn here we used @Transactional annotation so that either this methods completely succeed or rollback
 
-        Inventory updated = inventoryService.increaseStock(shopId, productName, quantity, price);
+        // Update inventory
+        Inventory updated;
+        try {
+            updated = inventoryService.increaseStock(shopId, productName, quantity, price);
+        } catch (Exception e) {
+            throw new InventoryUpdateException("Failed to update inventory for product: " + productName + " in shop ID: " + shopId);
+        }
 
+        //creating Response
         TransactionResponseDTO response = new TransactionResponseDTO();
+        //The transactionId and lastUpdatedDate are generated after saving the Transaction object to the database with transactionRepo.save(txn).
         response.setTransactionId(txn.getId());
-        response.setShopId(shop.getShopId());
+        response.setLastUpdatedDate(txn.getLastUpdatedDate());
+        response.setShopId(shopId);
         response.setShopName(shop.getShopName());
         response.setProductName(productName);
         response.setQuantity(quantity);
         response.setAction("STOCK_IN");
-        response.setLastUpdatedDate(txn.getLastUpdatedDate());
         response.setUpdatedStock(updated.getQuantity());
 
         return response;
@@ -57,7 +69,7 @@ public class TransactionService {
     @Transactional
     public TransactionResponseDTO sale(Long shopId, String productName, long quantity) {
         Shop shop = shopRepo.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+                .orElseThrow(() -> new ShopNotFoundException("Shop not found with ID: " + shopId));
 
         Transaction txn = new Transaction();
         txn.setShop(shop);
@@ -67,7 +79,13 @@ public class TransactionService {
 
         transactionRepo.save(txn);
 
-        Inventory updated = inventoryService.decreaseStock(shopId, productName, quantity);
+        // Update inventory
+        Inventory updated;
+        try {
+            updated = inventoryService.decreaseStock(shopId, productName, quantity);
+        } catch (Exception e) {
+            throw new InventoryUpdateException("Failed to update inventory for product: " + productName + " in shop ID: \n" + shopId + e);
+        }
 
         TransactionResponseDTO response = new TransactionResponseDTO();
         response.setTransactionId(txn.getId());
@@ -86,20 +104,25 @@ public class TransactionService {
     @Transactional
     public TransferResponseDTO transfer(Long sourceShopId, Long destShopId, String productName, long quantity) {
         Shop sourceShop = shopRepo.findById(sourceShopId)
-                .orElseThrow(() -> new RuntimeException("Source shop not found"));
+                .orElseThrow(() -> new ShopNotFoundException("Shop not found with ID: " + sourceShopId));
         Shop destShop = shopRepo.findById(destShopId)
-                .orElseThrow(() -> new RuntimeException("Destination shop not found"));
+                .orElseThrow(() ->  new ShopNotFoundException("Shop not found with ID: " + destShopId));
 
         // --- Source transaction ---
         Transaction sourceTxn = new Transaction();
         sourceTxn.setShop(sourceShop);
         sourceTxn.setProductName(productName);
         sourceTxn.setQuantity(quantity);
-        sourceTxn.setAction(TransactionAction.TRANSFER);
+        sourceTxn.setAction(TransactionAction.TRANSFER_OUT);
         sourceTxn.setTransferToShop(destShop);
         transactionRepo.save(sourceTxn);
 
-        Inventory sourceUpdated = inventoryService.decreaseStock(sourceShopId, productName, quantity);
+        Inventory sourceUpdated;
+        try {
+            sourceUpdated = inventoryService.decreaseStock(sourceShopId, productName, quantity);
+        } catch (Exception e) {
+            throw new InventoryUpdateException("Failed to update inventory for product: " + productName + " in shop ID: \n" + sourceShopId+e);
+        }
 
         TransactionResponseDTO sourceResponse = new TransactionResponseDTO();
         sourceResponse.setTransactionId(sourceTxn.getId());
@@ -117,10 +140,17 @@ public class TransactionService {
         destTxn.setShop(destShop);
         destTxn.setProductName(productName);
         destTxn.setQuantity(quantity);
-        destTxn.setAction(TransactionAction.STOCK_IN);
+        destTxn.setAction(TransactionAction.TRANSFER_IN);
         transactionRepo.save(destTxn);
 
-        Inventory destUpdated = inventoryService.increaseStock(destShopId, productName, quantity, 0);
+        Inventory destUpdated;
+
+        try {
+            destUpdated = inventoryService.increaseStock(destShopId, productName, quantity,0);
+        } catch (Exception e) {
+            throw new InventoryUpdateException("Failed to update inventory for product: " + productName + " in shop ID: " + destShopId);
+        }
+
 
         TransactionResponseDTO destResponse = new TransactionResponseDTO();
         destResponse.setTransactionId(destTxn.getId());

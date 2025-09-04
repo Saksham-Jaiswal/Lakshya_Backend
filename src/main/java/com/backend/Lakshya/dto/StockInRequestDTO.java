@@ -1,9 +1,18 @@
 package com.backend.Lakshya.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+
 public class StockInRequestDTO {
+    @NotNull(message = "Shop ID is required")
     private Long shopId;
+    @NotEmpty(message = "Product name cannot be empty")
     private String productName;
+    @Positive(message = "Quantity must be positive")
     private long quantity;
+    @PositiveOrZero(message = "Price cannot be negative")
     private double price;
 
     // Getters & Setters
