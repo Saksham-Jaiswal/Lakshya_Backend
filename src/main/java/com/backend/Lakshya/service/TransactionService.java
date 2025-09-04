@@ -1,6 +1,7 @@
 package com.backend.Lakshya.service;
 
 import com.backend.Lakshya.customException.InventoryUpdateException;
+import com.backend.Lakshya.customException.SameShopTransferException;
 import com.backend.Lakshya.customException.ShopNotFoundException;
 import com.backend.Lakshya.dto.TransactionResponseDTO;
 import com.backend.Lakshya.dto.TransferResponseDTO;
@@ -81,6 +82,10 @@ public class TransactionService {
     public TransferResponseDTO transfer(Long sourceShopId, Long destShopId, String productName, long quantity) {
         Shop sourceShop = findShopById(sourceShopId);
         Shop destShop = findShopById(destShopId);
+
+        if (sourceShopId.equals(destShopId)) {
+            throw new SameShopTransferException("Source and destination shops must be different. Shop ID: " + sourceShopId);
+        }
 
         Inventory sourceUpdated;
         try {
