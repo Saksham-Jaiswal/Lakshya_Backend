@@ -2,7 +2,7 @@ package com.backend.Lakshya.controller;
 
 import com.backend.Lakshya.dto.InventoryDTO;
 import com.backend.Lakshya.mapper.InventoryMapper;
-import com.backend.Lakshya.model.Transactions;
+import com.backend.Lakshya.model.Transaction;
 import com.backend.Lakshya.service.InventoryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +27,8 @@ public class InventoryController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/{shopId}/transaction")
-    public InventoryDTO handleTransaction(@PathVariable Long shopId, @RequestBody Transactions transaction) {
-        return InventoryMapper.toDTO(inventoryService.handleTransaction(shopId, transaction));
-    }
+//    @PostMapping("/{shopId}/transaction")
+//    public InventoryDTO handleTransaction(@PathVariable Long shopId, @RequestBody Transaction transaction) {
+//        return InventoryMapper.toDTO(inventoryService.handleTransaction(shopId, transaction));
+//    }
 }

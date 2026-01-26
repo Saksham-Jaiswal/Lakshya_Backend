@@ -1,25 +1,23 @@
 package com.backend.Lakshya.dto;
 
-import java.util.Date;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
-public class InventoryDTO {
-    private Long id;
+public class StockInRequestDTO {
+    @NotNull(message = "Shop ID is required")
     private Long shopId;
-    private String shopName; // this is extra, not in its model
+    @NotEmpty(message = "Product name cannot be empty")
     private String productName;
+    @Positive(message = "Quantity must be positive")
     private long quantity;
+    @Positive(message = "Price must be positive")
     private double price;
-    private Date lastUpdatedDate;
 
     // Getters & Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public Long getShopId() { return shopId; }
     public void setShopId(Long shopId) { this.shopId = shopId; }
-
-    public String getShopName() { return shopName; }
-    public void setShopName(String shopName) { this.shopName = shopName; }
 
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
@@ -29,7 +27,4 @@ public class InventoryDTO {
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
-
-    public Date getLastUpdatedDate() { return lastUpdatedDate; }
-    public void setLastUpdatedDate(Date lastUpdatedDate) { this.lastUpdatedDate = lastUpdatedDate; }
 }

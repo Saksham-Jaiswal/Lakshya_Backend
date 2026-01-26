@@ -5,14 +5,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.Date;
 
 @Entity
-@Table(name="transactions")
-public class Transactions {
+@Table(name="transaction")
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Many transactions belong to one shop
+    // Many transactions belong to one shop (the source shop for sales/transfer, or receiving shop for stock_in)
     @ManyToOne
     @JoinColumn(name = "shop_id", referencedColumnName = "shop_id", nullable = false)
     private Shop shop;
@@ -25,13 +25,18 @@ public class Transactions {
     private Date lastUpdatedDate;
 
     @Enumerated(EnumType.STRING)
-    private TransactionAction action;
+    private TransactionAction action; // SALES / STOCK_IN ETC..
+
+    // For transfers, we need to know where the stock went
+    @ManyToOne
+    @JoinColumn(name = "transfer_to_shop_id", referencedColumnName = "shop_id")
+    private Shop transferToShop;
 
     /*
-      action can have three values:
-      1. SALES
-      2. STOCK_IN
-      3. TRANSFER
+      action values:
+      1. SALES → quantity deducted
+      2. STOCK_IN → quantity added
+      3. TRANSFER → action=SALES (from source) + transferToShop filled (destination)
      */
 
     // Getters and setters
@@ -52,4 +57,7 @@ public class Transactions {
 
     public TransactionAction getAction() { return action; }
     public void setAction(TransactionAction action) { this.action = action; }
+
+    public Shop getTransferToShop() { return transferToShop; }
+    public void setTransferToShop(Shop transferToShop) { this.transferToShop = transferToShop; }
 }

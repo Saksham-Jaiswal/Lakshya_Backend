@@ -23,12 +23,12 @@ public class Shop {
     // Many shops can belong to one owner
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "userId", nullable = false)
-    private Users owner;
+    private User owner;
 
     // One salesman can only be linked to one shop
     @OneToOne
     @JoinColumn(name = "salesperson_id", referencedColumnName = "userId", unique = true, nullable = false)
-    private Users salesperson;
+    private User salesperson;
 
     // Getters and setters
     public Long getShopId() {
@@ -47,19 +47,19 @@ public class Shop {
         this.shopName = shopName;
     }
 
-    public Users getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(Users owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
-    public Users getSalesperson() {
+    public User getSalesperson() {
         return salesperson;
     }
 
-    public void setSalesperson(Users salesperson) {
+    public void setSalesperson(User salesperson) {
         this.salesperson = salesperson;
     }
 }

@@ -12,7 +12,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // One shop has many inventory items
+    // many inventory items would be of one shop
     @ManyToOne
     @JoinColumn(name = "shop_id", referencedColumnName = "shop_id", nullable = false)
     private Shop shop;

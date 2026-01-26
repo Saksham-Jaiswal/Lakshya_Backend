@@ -1,9 +1,11 @@
 package com.backend.Lakshya.service;
 
-import com.backend.Lakshya.model.*;
+import com.backend.Lakshya.customException.InventoryUpdateException;
+import com.backend.Lakshya.customException.ShopNotFoundException;
+import com.backend.Lakshya.model.Inventory;
+import com.backend.Lakshya.model.Shop;
 import com.backend.Lakshya.repository.InventoryRepository;
 import com.backend.Lakshya.repository.ShopRepository;
-import com.backend.Lakshya.repository.TransactionsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,53 +15,63 @@ import java.util.List;
 public class InventoryService {
 
     private final InventoryRepository inventoryRepo;
-    private final TransactionsRepository transactionRepo;
     private final ShopRepository shopRepo;
 
-    public InventoryService(InventoryRepository inventoryRepo,
-                            TransactionsRepository transactionRepo,
-                            ShopRepository shopRepo) {
+    public InventoryService(InventoryRepository inventoryRepo, ShopRepository shopRepo) {
         this.inventoryRepo = inventoryRepo;
-        this.transactionRepo = transactionRepo;
         this.shopRepo = shopRepo;
     }
 
     public List<Inventory> getInventoryByShop(Long shopId) {
+        Shop shop = shopRepo.findById(shopId)
+                .orElseThrow(() -> new ShopNotFoundException("Shop not found with ID: " + shopId));
         return inventoryRepo.findByShop_ShopId(shopId);
     }
 
     @Transactional
-    public Inventory handleTransaction(Long shopId, Transactions transaction) {
-        // fetch shop
-        Shop shop = shopRepo.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("Shop not found with id: " + shopId));
-
-        // attach shop to transaction
-        transaction.setShop(shop);
-
-        // save transaction
-        transactionRepo.save(transaction);
-
-        // update inventory
-        Inventory inventory = inventoryRepo.findByShop_ShopIdAndProductName(
-                shopId,
-                transaction.getProductName()
-        );
-
+    public Inventory increaseStock(Long shopId, String productName, long quantity, double price) {
+        Inventory inventory = inventoryRepo.findByShop_ShopIdAndProductName(shopId, productName);
         if (inventory == null) {
+            Shop shop = shopRepo.findById(shopId)
+                    .orElseThrow(() -> new ShopNotFoundException("Shop not found with ID: " + shopId));
             inventory = new Inventory();
             inventory.setShop(shop);
-            inventory.setProductName(transaction.getProductName());
+            inventory.setProductName(productName);
             inventory.setQuantity(0);
-            inventory.setPrice(0); // to be updated separately
+            inventory.setPrice(0.0);
         }
-
-        switch (transaction.getAction()) {
-            case STOCK_IN -> inventory.setQuantity(inventory.getQuantity() + transaction.getQuantity());
-            case SALES -> inventory.setQuantity(inventory.getQuantity() - transaction.getQuantity());
-            case TRANSFER -> inventory.setQuantity(inventory.getQuantity() - transaction.getQuantity());
+        inventory.setQuantity(inventory.getQuantity() + quantity);
+        if (price > 0) {
+            inventory.setPrice(price);
         }
-
         return inventoryRepo.save(inventory);
     }
+
+    @Transactional
+    public Inventory decreaseStock(Long shopId, String productName, long quantity) {
+        Inventory inventory = getExistingInventory(shopId, productName);
+        if (inventory.getQuantity() < quantity) {
+            throw new InventoryUpdateException("Insufficient stock for product: " + productName +
+                    " in shop ID: " + shopId + ". Available: " + inventory.getQuantity());
+        }
+        inventory.setQuantity(inventory.getQuantity() - quantity);
+        return inventoryRepo.save(inventory);
+    }
+
+    private Inventory getExistingInventory(Long shopId, String productName) {
+        Inventory inventory = inventoryRepo.findByShop_ShopIdAndProductName(shopId, productName);
+        if (inventory == null) {
+            throw new InventoryUpdateException("No inventory found for product: " + productName +
+                    " in shop ID: " + shopId);
+        }
+        return inventory;
+    }
 }
+/*
+JPA/Hibernate Behavior:
+
+If the Inventory object has an ID (i.e., it was loaded from the database), save updates the existing record.
+If the Inventory object has no ID (i.e., it’s newly created), save creates a new record.
+
+
+ */
