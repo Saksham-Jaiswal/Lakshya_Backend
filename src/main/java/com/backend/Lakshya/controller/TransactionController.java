@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
@@ -49,5 +51,13 @@ public class TransactionController {
                 request.getQuantity()
         );
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/shop/{shopId}")
+    public ResponseEntity<List<TransactionDTO>> getShopHistory(@PathVariable Long shopId) {
+        // You will need to add a method in TransactionService to fetch these
+        // and map them using TransactionMapper
+        List<TransactionDTO> history = transactionService.getHistoryByShop(shopId);
+        return ResponseEntity.ok(history);
     }
 }

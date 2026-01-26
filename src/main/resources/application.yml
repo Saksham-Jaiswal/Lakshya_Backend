@@ -1,8 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require
-    username: postgres.abljgshvqngttswcuwpl
-    password: KUnal@333456
+    # Update these 3 lines for local development:
+    url: jdbc:postgresql://localhost:5432/lakshya_db
+    username: postgres
+    password: hello  # REPLACE with your actual local PostgreSQL password
     driver-class-name: org.postgresql.Driver
 
     hikari:

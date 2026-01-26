@@ -31,6 +31,7 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "transfer_to_shop_id", referencedColumnName = "shop_id")
     private Shop transferToShop;
+    private double price; // Store the unit price here
 
     /*
       action values:
@@ -40,6 +41,14 @@ public class Transaction {
      */
 
     // Getters and setters
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

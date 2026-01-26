@@ -17,13 +17,14 @@ public class TransactionUtil {
     }
 
     public TransactionResponseDTO createAndSaveTransaction(Shop shop, String productName, long quantity,
-                                                           TransactionAction action, Shop transferToShop) {
+                                                           TransactionAction action, Shop transferToShop, double price) {
         // Create and save transaction
         Transaction txn = new Transaction();
         txn.setShop(shop);
         txn.setProductName(productName);
         txn.setQuantity(quantity);
         txn.setAction(action);
+        txn.setPrice(price);
         if (transferToShop != null) {
             txn.setTransferToShop(transferToShop);
         }
