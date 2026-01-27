@@ -37,12 +37,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/transactions/stock-in").hasRole("OWNER")
                         .requestMatchers(HttpMethod.POST, "/api/transactions/transfer").hasRole("OWNER")
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("OWNER")
-                        .requestMatchers("/api/dashboard/**").hasRole("OWNER")
+                        // .requestMatchers("/api/dashboard/**").hasRole("OWNER") // <-- REMOVE THIS LINE (It blocked Salespeople)
 
-                        // 3. Sales Actions
+                        // 3. Shared Actions (Owner AND Salesperson)
+                        // Allow both to see Dashboard Stats
+                        .requestMatchers("/api/dashboard/**").hasAnyRole("OWNER", "SALESPERSON")
+                        // Allow both to find their shop
+                        .requestMatchers(HttpMethod.GET, "/api/shops/salesperson/**").hasAnyRole("OWNER", "SALESPERSON")
+                        // Allow both to make sales
                         .requestMatchers(HttpMethod.POST, "/api/transactions/sale").hasAnyRole("SALESPERSON", "OWNER")
 
-                        // 4. Authenticated Actions
+                        // 4. Authenticated Actions (Catch-all for other GET requests)
                         .requestMatchers("/api/inventory/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/transactions/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/shops/**").authenticated()
