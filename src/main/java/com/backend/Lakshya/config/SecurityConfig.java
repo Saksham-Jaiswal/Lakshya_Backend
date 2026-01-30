@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 1. Public Endpoints
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
 
                         // 2. Owner Only Actions
                         .requestMatchers(HttpMethod.POST, "/api/shops/**").hasRole("OWNER")
