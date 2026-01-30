@@ -1,6 +1,8 @@
 package com.backend.Lakshya.controller;
 
 import com.backend.Lakshya.dto.*;
+import com.backend.Lakshya.model.Shop;
+import com.backend.Lakshya.model.Transaction;
 import com.backend.Lakshya.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,12 @@ public class TransactionController {
 
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TransactionDTO>>  getAllTransactions() {
+        List<TransactionDTO> txns = transactionService.getTransactions();
+        return ResponseEntity.ok(txns);
     }
 
     // ---------- STOCK IN ----------

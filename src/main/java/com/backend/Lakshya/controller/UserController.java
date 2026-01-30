@@ -1,5 +1,7 @@
 package com.backend.Lakshya.controller;
 
+import com.backend.Lakshya.dto.TransactionDTO;
+import com.backend.Lakshya.dto.UserDTO;
 import com.backend.Lakshya.model.User;
 import com.backend.Lakshya.repository.UserRepository;
 import com.backend.Lakshya.service.UserService;
@@ -25,8 +27,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return usersRepo.findAll();
+    public ResponseEntity<List<UserDTO>>  getAllUsers() {
+        List<UserDTO> users = userService.getUsers();
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping

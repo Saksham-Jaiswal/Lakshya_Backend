@@ -148,4 +148,9 @@ public class TransactionService {
                 .map(TransactionMapper::toDTO)
                 .collect(Collectors.toList());
     }
+    public List<TransactionDTO> getTransactions()
+    {
+        return transactionRepository.findAll().stream().map(TransactionMapper::toDTO).collect(Collectors.toList());
+    }
+
 }

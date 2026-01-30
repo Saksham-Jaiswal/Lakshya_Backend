@@ -1,9 +1,14 @@
 package com.backend.Lakshya.service;
 
+import com.backend.Lakshya.dto.UserDTO;
+import com.backend.Lakshya.mapper.UserMapper;
 import com.backend.Lakshya.model.User;
 import com.backend.Lakshya.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service // 1. Tells Spring this is a Service bean
 public class UserService {
@@ -16,6 +21,11 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public List<UserDTO> getUsers()
+    {
+        return userRepository.findAll().stream().map(UserMapper::toDTO).collect(Collectors.toList());
     }
 
     public User createUser(User user) {
