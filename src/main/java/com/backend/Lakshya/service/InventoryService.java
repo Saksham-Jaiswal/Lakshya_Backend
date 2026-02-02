@@ -2,14 +2,20 @@ package com.backend.Lakshya.service;
 
 import com.backend.Lakshya.customException.InventoryUpdateException;
 import com.backend.Lakshya.customException.ShopNotFoundException;
+import com.backend.Lakshya.dto.InventoryDTO;
+import com.backend.Lakshya.mapper.InventoryMapper;
 import com.backend.Lakshya.model.Inventory;
 import com.backend.Lakshya.model.Shop;
 import com.backend.Lakshya.repository.InventoryRepository;
 import com.backend.Lakshya.repository.ShopRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InventoryService {
@@ -65,6 +71,16 @@ public class InventoryService {
                     " in shop ID: " + shopId);
         }
         return inventory;
+    }
+    public List<InventoryDTO> getLowStockAlerts(Long shopId, long threshold )// Default threshold is 10
+    {
+        List<Inventory> lowStockItems = inventoryRepo.findByShop_ShopIdAndQuantityLessThan(shopId, threshold);
+
+        List<InventoryDTO> response = lowStockItems.stream()
+                .map(InventoryMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return response;
     }
 }
 /*
