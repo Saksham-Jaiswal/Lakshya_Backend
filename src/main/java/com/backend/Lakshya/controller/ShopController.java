@@ -54,4 +54,16 @@ public class ShopController {
         ShopDTO updatedShop = shopService.assignSalesperson(shopId, salespersonId);
         return ResponseEntity.ok(updatedShop);
     }
+    @PutMapping("/{shopId}")
+    public ResponseEntity<ShopDTO> updateShop(
+            @PathVariable Long shopId,
+            @RequestBody ShopDTO shopDetails) {
+
+        try {
+            ShopDTO updatedShop = shopService.updateShop(shopId, shopDetails);
+            return ResponseEntity.ok(updatedShop);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

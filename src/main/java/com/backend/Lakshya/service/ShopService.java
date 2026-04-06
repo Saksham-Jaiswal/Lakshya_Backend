@@ -71,6 +71,24 @@ public class ShopService {
         return ShopMapper.toDTO(shopRepo.save(shop));
     }
 
+    public ShopDTO updateShop(Long shopId, ShopDTO shopDetails) {
+        // 1. Find the existing shop
+        Shop shop = shopRepo.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found with id: " + shopId));
+
+        // 2. Update the fields (Right now, just the name)
+        if (shopDetails.getShopName() != null && !shopDetails.getShopName().trim().isEmpty()) {
+            shop.setShopName(shopDetails.getShopName());
+        }
+
+        // 3. Save to database
+        Shop updatedShop = shopRepo.save(shop);
+
+        // 4. Convert back to DTO and return (assuming you have a mapping method)
+        // Replace this with however your service currently maps Entities to DTOs!
+        return ShopMapper.toDTO(updatedShop);
+    }
+
 
 
 

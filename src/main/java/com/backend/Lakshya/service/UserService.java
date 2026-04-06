@@ -2,6 +2,7 @@ package com.backend.Lakshya.service;
 
 import com.backend.Lakshya.dto.UserDTO;
 import com.backend.Lakshya.mapper.UserMapper;
+import com.backend.Lakshya.model.Role;
 import com.backend.Lakshya.model.User;
 import com.backend.Lakshya.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +32,9 @@ public class UserService {
     public List<UserDTO> getUsers()
     {
         return userRepository.findAll().stream().map(UserMapper::toDTO).collect(Collectors.toList());
+    }
+    public List<UserDTO> getSalespeopleByOwner(Long ownerId) {
+        return userRepository.findByRoleAndOwnerId(Role.SALESPERSON, ownerId).stream().map(UserMapper::toDTO).collect(Collectors.toList());
     }
 
     public User createUser(User user) {

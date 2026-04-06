@@ -32,6 +32,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/owner/{ownerId}/salespeople")
+    public ResponseEntity<List<UserDTO>> getSalespeopleByOwner(@PathVariable Long ownerId) {
+        List<UserDTO> salespeople = userService.getSalespeopleByOwner(ownerId);
+        return ResponseEntity.ok(salespeople);
+    }
+
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
@@ -49,11 +55,6 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
-//    @GetMapping("/{id}")
-//    public User getUser(@PathVariable Long id) {
-//        return usersRepo.findById(id).orElseThrow();
-//    }
-    // POST: /api/users/forgot-password
     @PostMapping("/forgot-password")
     public ResponseEntity<?> requestPasswordReset(@RequestBody Map<String, String> request) {
         try {
@@ -64,7 +65,6 @@ public class UserController {
         }
     }
 
-    // POST: /api/users/reset-password
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
         try {
@@ -78,4 +78,5 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 }
